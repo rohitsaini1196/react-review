@@ -26,10 +26,15 @@ export default function Reviewer() {
 
     const textAnalysis = (text)=>{
         var totalNoOfSpaces = textReview.split(" ").length -1;
-       var totalNoOfSentances = textReview.split(".").length;
+       var totalNoOfSentences = textReview.split(".").length;
 
-       console.log(totalNoOfSpaces);
-       console.log(totalNoOfSentances);
+       var result = {
+           words : text.length,
+           spaces: totalNoOfSpaces,
+           sentence : totalNoOfSentences,
+           timeTaken : 0,
+           probabilty: 0,
+       }
     }
 
     const handleTextChange = (event) => {
