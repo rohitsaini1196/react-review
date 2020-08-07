@@ -12,6 +12,7 @@ export default function Reviewer() {
     const [isSubmitted, setIsSubmitted] = React.useState(false);
     const [letterCorrected, setLetterCorrected]= React.useState(0);
     const [timesKeyPressed, setTimesKeyPressed]= React.useState(0);
+    const [pastedTimes, setPastedTimes] = React.useState(0);
     
 
 
@@ -24,7 +25,6 @@ export default function Reviewer() {
 
         setIsSubmitted(true)
 
-
         if(starValue !==null && starValue !== -1 ){
             console.log(starValue);
         } else{
@@ -33,14 +33,18 @@ export default function Reviewer() {
     }
 
     const textAnalysis = (text, timeTaken)=>{
+        const re = /[.!?]/;
         var totalNoOfSpaces = textReview.split(" ").length -1;
-        var totalNoOfSentences = textReview.split(".").length;
+        var totalNoOfSentences = textReview.split(re).length -1;
+        //console.log(totalNoOfSentences);
+        
 
         var minTime = text.length * 0.30;
-        console.log("mintime  = "+minTime);
-        console.log("time Taken = "+ timeTaken);
-        var probabilty =  timeTaken/minTime;
-        var remark = "looks legit";
+        //console.log("mintime  = "+minTime);
+        //console.log("time Taken = "+ timeTaken);
+        var probabilty =  calculateProbability(timeTaken, minTime);
+        //console.log(probabilty);
+        var remark = decideRemarks(probabilty);
 
         var result = {
            totalKeyPressed: timesKeyPressed,
@@ -50,21 +54,47 @@ export default function Reviewer() {
            timeTaken : timeTaken,
            probabilty: probabilty,
            remark : remark,
-           letterCorrected: letterCorrected
+           letterCorrected: letterCorrected,
+           pastedTimes: pastedTimes
         }
-
         return result;
+    }
+
+
+    const calculateProbability = (timeTaken, timeCalculated) =>{
+        if(timeTaken > timeCalculated){
+            return 0.99;
+        } else{
+            return timeTaken/timeCalculated;
+        }
+    }
+
+    const decideRemarks = (prob)=>{
+        if(prob <= 0.1){
+            return "Clear copy paste";
+        } else if ( (0.1 < prob)&& (prob <= 0.4)){
+            return "Copy paste";
+        } else if ( (0.4 < prob) && (prob <= 0.65)){
+            return "Slow copy paster or very fast typer";
+        } else if ( (0.65 < prob) && (prob <= 1)){
+            return "Legit review";
+        }
     }
 
     const handleTextChange = (event) => {
         var textt = event.target.value;
+
         if(startTime === 0){
             var startT = new Date();
             setStartTime(startT.getTime())
         }
 
         if(textReview.length > textt.length){
-                setLetterCorrected(letterCorrected + 1);
+            setLetterCorrected(letterCorrected + 1);
+        }
+
+        if (textt.length -textReview.length > 1 ) {
+            setPastedTimes(pastedTimes + 1)
         }
         setTextReview(event.target.value);
         setTimesKeyPressed(timesKeyPressed + 1);
@@ -74,7 +104,11 @@ export default function Reviewer() {
         <div>
             
             {!isSubmitted ? (
-                <div>
+                <div style={{
+                    width: '50%',
+                   
+
+                }}>
                 <form noValidate autoComplete="off" onSubmit={submitReview}>
                 <Box component="fieldset" mb={3} borderColor="transparent">
                     <Rating
@@ -94,18 +128,19 @@ export default function Reviewer() {
                     labelWidth={0}
                     placeholder="Wrirte your review here..."
                     rowsMax={20}
+                    rows={3}
                     multiline={true}
+                    fullWidth
                     style={{
                         borderWidth: 1,
-                        borderRadius: 50,
+                        borderRadius: 10,
                     }}
-
                     />
                 <br></br>
                 <br></br>
     
                 
-                <Button variant="contained" type="submit" color="primary"> Submit</Button>
+                <Button variant="contained" type="submit" color="primary" style={{borderRadius: 50, textTransform: 'none'}}> Submit</Button>
     
                 </form>
                 </div>
@@ -115,11 +150,3 @@ export default function Reviewer() {
         </div>
     )
 }
-
-
-// console.log(textReview);
-       // console.log(textReview.length);
-       //var totalNoOfSpaces = textReview.split(" ");
-     //  var totalNoOfSentances = textReview.split(".");
-     //  console.log("total spaces : ? "+totalNoOfSpaces.length);
-     //  console.log("total sentaces: ? "+totalNoOfSentances.length);
