@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
-export default function Reviewer() {
+export default function Reviewer(props) {
 
     const [starValue, setStarValue] = React.useState(4);
     const [textReview, setTextReview] = React.useState("");
@@ -13,39 +13,43 @@ export default function Reviewer() {
     const [letterCorrected, setLetterCorrected]= React.useState(0);
     const [timesKeyPressed, setTimesKeyPressed]= React.useState(0);
     const [pastedTimes, setPastedTimes] = React.useState(0);
-    
+    const [fieldData, setFieldData] = React.useState([]);
 
+    React.useEffect(()=>{
+        setFieldData(props.fieldData)
+        console.log(props.fieldData.length);
+    }, [props.fieldData])
+    
 
     function submitReview(e) {
         e.preventDefault();
         var endT = new Date();
         const timeTaken = (endT.getTime() - startTime) / 1000;
-        console.log(textAnalysis(textReview, timeTaken));
-        console.log(timeTaken);
-
         setIsSubmitted(true)
-
         if(starValue !==null && starValue !== -1 ){
-            console.log(starValue);
         } else{
             alert("Please give it some stars");
         }
+        var res = {
+            text : textReview,
+            stars: starValue,
+            analysis : textAnalysis(textReview, timeTaken)
+        }
+        console.log(res);
+        return res;
+    }
+
+    const clearStar = ()=>{
+        setStarValue(-1)
     }
 
     const textAnalysis = (text, timeTaken)=>{
         const re = /[.!?]/;
         var totalNoOfSpaces = textReview.split(" ").length -1;
         var totalNoOfSentences = textReview.split(re).length -1;
-        //console.log(totalNoOfSentences);
-        
-
         var minTime = text.length * 0.30;
-        //console.log("mintime  = "+minTime);
-        //console.log("time Taken = "+ timeTaken);
         var probabilty =  calculateProbability(timeTaken, minTime);
-        //console.log(probabilty);
         var remark = decideRemarks(probabilty);
-
         var result = {
            totalKeyPressed: timesKeyPressed,
            letters : text.length,
@@ -59,7 +63,6 @@ export default function Reviewer() {
         }
         return result;
     }
-
 
     const calculateProbability = (timeTaken, timeCalculated) =>{
         if(timeTaken > timeCalculated){
@@ -100,6 +103,51 @@ export default function Reviewer() {
         setTimesKeyPressed(timesKeyPressed + 1);
     }
 
+    const handleFieldStarChange = (newValue, i) =>{
+        console.log(newValue);
+    }
+
+    const handleFieldTextChange =(text, i)=>{
+        console.log(text);
+        console.log(i);
+    }
+
+
+    const makeFieldUI = ()=>{
+        return fieldData.map((field, i) =>(
+            <div key={i}>
+                <div>
+                <Box component="fieldset" mb={3} borderColor="transparent">
+                    <Rating
+                    name="simple-controlled"
+                    value={starFieldValue(i)}
+                    onChange={(event, newValue) => {
+                        handleFieldStarChange(newValue, i)
+                    }}
+                    />
+                 </Box>
+    
+                <OutlinedInput 
+                    id="standard-basic" 
+                    name="review-text"
+                    value={textFieldReview(i)}
+                    onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}
+                    labelWidth={0}
+                    placeholder="Wrirte your review here..."
+                    rowsMax={20}
+                    rows={3}
+                    multiline={true}
+                    fullWidth
+                    style={{
+                        borderWidth: 1,
+                        borderRadius: 10,
+                    }}
+                    />
+                </div>
+            </div>
+        ))
+    }
+
     return (
         <div>
             
@@ -118,6 +166,9 @@ export default function Reviewer() {
                         setStarValue(newValue);
                     }}
                     />
+                    <br></br>
+
+                    <Button size="small" variant="contained" style={{textTransform: 'none'}} onClick={clearStar}>Clear</Button>
                 </Box>
     
                 <OutlinedInput 
@@ -138,6 +189,7 @@ export default function Reviewer() {
                     />
                 <br></br>
                 <br></br>
+                {makeFieldUI()}
     
                 
                 <Button variant="contained" type="submit" color="primary" style={{borderRadius: 50, textTransform: 'none'}}> Submit</Button>
