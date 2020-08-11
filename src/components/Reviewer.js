@@ -3,6 +3,7 @@ import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import { Typography } from '@material-ui/core';
 
 export default function Reviewer(props) {
 
@@ -16,8 +17,15 @@ export default function Reviewer(props) {
     const [fieldData, setFieldData] = React.useState([]);
 
     React.useEffect(()=>{
-        setFieldData(props.fieldData)
-        console.log(props.fieldData.length);
+        
+        var fieldDataObject = props.fieldData;
+       // console.log(fieldDataObject);
+
+        fieldDataObject = fieldDataObject.map((str, i)=>({
+            name: str, id: i, stars : -1, text: ""
+        }));
+        setFieldData(fieldDataObject)
+       // console.log(fieldDataObject);
     }, [props.fieldData])
     
 
@@ -35,6 +43,7 @@ export default function Reviewer(props) {
             stars: starValue,
             analysis : textAnalysis(textReview, timeTaken)
         }
+        console.log(fieldData);
         console.log(res);
         return res;
     }
@@ -104,23 +113,28 @@ export default function Reviewer(props) {
     }
 
     const handleFieldStarChange = (newValue, i) =>{
-        console.log(newValue);
+        let newerFieldData = [...fieldData];
+        newerFieldData[i].stars = newValue;
+        setFieldData(newerFieldData)
     }
 
     const handleFieldTextChange =(text, i)=>{
-        console.log(text);
-        console.log(i);
+        let newerFieldData = [...fieldData];
+        newerFieldData[i].text = text;
+        setFieldData(newerFieldData)
     }
-
 
     const makeFieldUI = ()=>{
         return fieldData.map((field, i) =>(
             <div key={i}>
-                <div>
+
+                <div style={{display:'flex', margin: '10px 0px'}}>
                 <Box component="fieldset" mb={3} borderColor="transparent">
+                    <Typography>{field.name}</Typography>
+
                     <Rating
-                    name="simple-controlled"
-                    value={starFieldValue(i)}
+                    name={"simple-controlled" + i}
+                    value={fieldData[i].stars}
                     onChange={(event, newValue) => {
                         handleFieldStarChange(newValue, i)
                     }}
@@ -130,14 +144,14 @@ export default function Reviewer(props) {
                 <OutlinedInput 
                     id="standard-basic" 
                     name="review-text"
-                    value={textFieldReview(i)}
+                    value={fieldData[i].text}
                     onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}
                     labelWidth={0}
                     placeholder="Wrirte your review here..."
                     rowsMax={20}
-                    rows={3}
-                    multiline={true}
-                    fullWidth
+                    rows={2}
+                    multiline={false}
+                    fullWidth={false}
                     style={{
                         borderWidth: 1,
                         borderRadius: 10,

@@ -6,7 +6,7 @@ import Reviewer from './components/Reviewer';
 
 function App() {
 
-  const fieldData = [1,2,3,4,5]
+  const fieldData = ['Speed', 'Value Of Money', 'For Gaming', 'Comfort', 'Thickness']
   return (
     <div className="App">
     <Reviewer fieldData={fieldData}   />
