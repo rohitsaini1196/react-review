@@ -1,10 +1,8 @@
 import React from 'react';
-import Rating from '@material-ui/lab/Rating';
+import { FaStar } from 'react-icons/fa';
 
 export default function Reviewer(props) {
-
     const [starValue, setStarValue] = React.useState(4);
-    //console.log(starValue);
     const [textReview, setTextReview] = React.useState("");
     const [startTime, setStartTime] = React.useState(0);
     const [isSubmitted, setIsSubmitted] = React.useState(false);
@@ -14,19 +12,15 @@ export default function Reviewer(props) {
     const [fieldData, setFieldData] = React.useState([]);
 
     React.useEffect(()=>{
-        
         var fieldDataObject = props.fieldData;
         console.log(fieldDataObject);
 
         if(fieldDataObject !== undefined){
-
             fieldDataObject = fieldDataObject.map((str, i)=>({
                 name: str, id: i, stars : 0, text: ""
             }));
             setFieldData(fieldDataObject)
         }
-
-       // console.log(fieldDataObject);
     }, [props.fieldData])
     
 
@@ -133,7 +127,6 @@ export default function Reviewer(props) {
     const makeFieldUI = ()=>{
         return fieldData.map((field, i) =>(
             <div key={i}>
-
                 <div style={{display:'flex', margin: '30px 0px'}}>
                 <div>
                     <p style={{fontSize: '20px'}}>{field.name}</p>
@@ -161,16 +154,13 @@ export default function Reviewer(props) {
 
     return (
         <div>
-
-            
-
             {!isSubmitted ? (
                 <div style={{display: 'flex'}}>
                 <form noValidate autoComplete="off" onSubmit={submitReview}>
                     <div>
-            <StarRating value={starValue} onChange={handleStarChange} />
-
+                        <StarRating value={starValue} onChange={handleStarChange} />
                     </div>
+
                     <div>
                         <textarea 
                             rows="4" 
@@ -180,26 +170,25 @@ export default function Reviewer(props) {
                             placeholder="Write your review here..."
                             style={{resize: 'none',borderRadius: 10, textAlign: 'center'}}>
                         </textarea>
-                    </div>                    
+                    </div>  
+
                     <div>
                         {makeFieldUI()}
                     </div>
-    
                 
                     <div>
                     <button type="submit" style={{
-                    borderRadius: 50, 
-                    border:'none', 
-                    backgroundColor: 'blue', 
-                    color:'white',
-                    textAlign: 'center',
-                    padding: '10px',
-                    margin: '4px',
-                    outline: 'none',
-                    cursor: 'pointer'
-                    }}> Submit</button>
+                        borderRadius: 50, 
+                        border:'none', 
+                        backgroundColor: 'blue', 
+                        color:'white',
+                        textAlign: 'center',
+                        padding: '10px',
+                        margin: '4px',
+                        outline: 'none',
+                        cursor: 'pointer'
+                        }}> Submit</button>
                     </div>
-    
                 </form>
                 </div>
             ) : (
@@ -210,14 +199,12 @@ export default function Reviewer(props) {
 }
 
 
-
 function StarRating(props){
     const change = (newStars)=>{
        props.onChange(newStars)
     }
-
     return (
-        <div style={{width:'270px'}}>
+        <div style={{width:'150px'}}>
             <div className="star-rating">
                 {[1,2,3,4,5].map((n, i) => (
                 <Star
@@ -229,9 +216,11 @@ function StarRating(props){
             </div>
         </div>
     )
-
 }
 
 const Star = ({ selected = false, onClick = f => f }) => (
-    <div className={selected ? "star selected" : "star"} onClick={onClick} />
+    <div>
+        {selected ? (<FaStar onClick={onClick} style={{color: 'orange'}} />):
+            (<FaStar onClick={onClick} style={{color: 'grey'}} />)}
+    </div>
   );
