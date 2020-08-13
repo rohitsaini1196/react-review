@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from "prop-types";
+import { FaStar } from 'react-icons/fa';
 
 function Reviewer(props) {
-
     const [starValue, setStarValue] = React.useState(4);
-    //console.log(starValue);
     const [textReview, setTextReview] = React.useState("");
     const [startTime, setStartTime] = React.useState(0);
     const [isSubmitted, setIsSubmitted] = React.useState(false);
@@ -14,19 +13,15 @@ function Reviewer(props) {
     const [fieldData, setFieldData] = React.useState([]);
 
     React.useEffect(()=>{
-        
         var fieldDataObject = props.fieldData;
         console.log(fieldDataObject);
 
         if(fieldDataObject !== undefined){
-
             fieldDataObject = fieldDataObject.map((str, i)=>({
                 name: str, id: i, stars : 0, text: ""
             }));
             setFieldData(fieldDataObject)
         }
-
-       // console.log(fieldDataObject);
     }, [props.fieldData])
     
 
@@ -35,20 +30,19 @@ function Reviewer(props) {
         var endT = new Date();
         const timeTaken = (endT.getTime() - startTime) / 1000;
         setIsSubmitted(true)
-        if(starValue !==null && starValue !== -1 && starValue !== 0 ){
-            var res = {
-                text : textReview,
-                stars: starValue,
-                analysis : textAnalysis(textReview, timeTaken),
-                categoryData : fieldData
-            }
-           // console.log(fieldData);
-            console.log(res);
-            return res;
+        if(starValue !==null && starValue !== -1 ){
         } else{
             alert("Please give it some stars");
         }
-        
+        var res = {
+            text : textReview,
+            stars: starValue,
+            analysis : textAnalysis(textReview, timeTaken),
+            categoryData : fieldData
+        }
+        console.log(fieldData);
+        console.log(res);
+        return res;
     }
 
     const handleStarChange =(newValue)=>{
@@ -134,7 +128,6 @@ function Reviewer(props) {
     const makeFieldUI = ()=>{
         return fieldData.map((field, i) =>(
             <div key={i}>
-
                 <div style={{display:'flex', margin: '30px 0px'}}>
                 <div>
                     <p style={{fontSize: '20px'}}>{field.name}</p>
@@ -147,12 +140,11 @@ function Reviewer(props) {
                     }}
                     />
                  </div>
-                        <textarea 
+                 <textarea 
                             rows="3" 
                             cols="20" 
                             value={fieldData[i].text}
-                            onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}                            
-                            placeholder="Write your review here..."
+                            onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}                            placeholder="Write your review here..."
                             style={{resize: 'none',borderRadius: 10, textAlign: 'center'}}>
                         </textarea>
     
@@ -163,16 +155,13 @@ function Reviewer(props) {
 
     return (
         <div>
-
-            
-
             {!isSubmitted ? (
                 <div style={{display: 'flex'}}>
                 <form noValidate autoComplete="off" onSubmit={submitReview}>
                     <div>
-            <StarRating value={starValue} onChange={handleStarChange} />
-
+                        <StarRating value={starValue} onChange={handleStarChange} />
                     </div>
+                    
                     <div>
                         <textarea 
                             rows="4" 
@@ -182,26 +171,25 @@ function Reviewer(props) {
                             placeholder="Write your review here..."
                             style={{resize: 'none',borderRadius: 10, textAlign: 'center'}}>
                         </textarea>
-                    </div>                    
+                    </div>  
+
                     <div>
                         {makeFieldUI()}
                     </div>
-    
                 
                     <div>
                     <button type="submit" style={{
-                    borderRadius: 50, 
-                    border:'none', 
-                    backgroundColor: 'blue', 
-                    color:'white',
-                    textAlign: 'center',
-                    padding: '10px',
-                    margin: '4px',
-                    outline: 'none',
-                    cursor: 'pointer'
-                    }}> Submit</button>
+                        borderRadius: 50, 
+                        border:'none', 
+                        backgroundColor: 'blue', 
+                        color:'white',
+                        textAlign: 'center',
+                        padding: '10px',
+                        margin: '4px',
+                        outline: 'none',
+                        cursor: 'pointer'
+                        }}> Submit</button>
                     </div>
-    
                 </form>
                 </div>
             ) : (
@@ -212,14 +200,12 @@ function Reviewer(props) {
 }
 
 
-
 function StarRating(props){
     const change = (newStars)=>{
        props.onChange(newStars)
     }
-
     return (
-        <div style={{width:'270px'}}>
+        <div style={{width:'150px'}}>
             <div className="star-rating">
                 {[1,2,3,4,5].map((n, i) => (
                 <Star
@@ -231,15 +217,16 @@ function StarRating(props){
             </div>
         </div>
     )
-
 }
 
 const Star = ({ selected = false, onClick = f => f }) => (
-    <div className={selected ? "star selected" : "star"} onClick={onClick} />
+    <div>
+        {selected ? (<FaStar onClick={onClick} style={{color: 'orange', cursor: "pointer"}} />):
+            (<FaStar onClick={onClick} style={{color: 'grey', cursor:'pointer'}} />)}
+    </div>
   );
 
-
-Reviewer.propTypes = {
+  Reviewer.propTypes = {
     fieldData: PropTypes.array
 };
 

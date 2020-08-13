@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import { FaStar } from 'react-icons/fa';
 
-export default function Reviewer(props) {
+function Reviewer(props) {
     const [starValue, setStarValue] = React.useState(4);
     const [textReview, setTextReview] = React.useState("");
     const [startTime, setStartTime] = React.useState(0);
@@ -160,7 +161,7 @@ export default function Reviewer(props) {
                     <div>
                         <StarRating value={starValue} onChange={handleStarChange} />
                     </div>
-
+                    
                     <div>
                         <textarea 
                             rows="4" 
@@ -220,7 +221,13 @@ function StarRating(props){
 
 const Star = ({ selected = false, onClick = f => f }) => (
     <div>
-        {selected ? (<FaStar onClick={onClick} style={{color: 'orange'}} />):
-            (<FaStar onClick={onClick} style={{color: 'grey'}} />)}
+        {selected ? (<FaStar onClick={onClick} style={{color: 'orange', cursor: "pointer"}} />):
+            (<FaStar onClick={onClick} style={{color: 'grey', cursor:'pointer'}} />)}
     </div>
   );
+
+  Reviewer.propTypes = {
+    fieldData: PropTypes.array
+};
+
+export default Reviewer;
