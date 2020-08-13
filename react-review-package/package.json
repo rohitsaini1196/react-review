@@ -1,6 +1,6 @@
 {
   "name": "react-review",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "React review and feedback library with complete analysis of text and probability of being a fake review",
   "main": "./build/index.js",
   "scripts": {

@@ -14,7 +14,7 @@ function Reviewer(props) {
 
     React.useEffect(()=>{
         var fieldDataObject = props.fieldData;
-        console.log(fieldDataObject);
+       // console.log(fieldDataObject);
 
         if(fieldDataObject !== undefined){
             fieldDataObject = fieldDataObject.map((str, i)=>({
@@ -129,23 +129,22 @@ function Reviewer(props) {
         return fieldData.map((field, i) =>(
             <div key={i}>
                 <div style={{display:'flex', margin: '30px 0px'}}>
-                <div>
-                    <p style={{fontSize: '20px'}}>{field.name}</p>
+                    <div>
+                        <p style={{fontSize: '20px'}}>{field.name}</p>
 
-                    <StarRating
-                    value={fieldData[i].stars}
-                    onChange={(newValue) => {
-                        console.log(newValue);
-                        handleFieldStarChange(newValue, i)
-                    }}
-                    />
-                 </div>
-                 <textarea 
-                            rows="3" 
-                            cols="20" 
+                        <StarRating
+                        value={fieldData[i].stars}
+                        onChange={(newValue) => {
+                         //   console.log(newValue);
+                            handleFieldStarChange(newValue, i)
+                        }}
+                        />
+                    </div>
+                        <textarea 
+                            
                             value={fieldData[i].text}
                             onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}                            placeholder="Write your review here..."
-                            style={{resize: 'none',borderRadius: 10, textAlign: 'center'}}>
+                            style={{resize: 'none',borderRadius: 5, textAlign: 'center'}}>
                         </textarea>
     
                 </div>
@@ -156,12 +155,13 @@ function Reviewer(props) {
     return (
         <div>
             {!isSubmitted ? (
-                <div style={{display: 'flex'}}>
+                <div>
                 <form noValidate autoComplete="off" onSubmit={submitReview}>
-                    <div>
+                  <div style={{display:'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}> 
+                    <div style={{margin: '10px'}}>
                         <StarRating value={starValue} onChange={handleStarChange} />
                     </div>
-                    
+
                     <div>
                         <textarea 
                             rows="4" 
@@ -169,27 +169,34 @@ function Reviewer(props) {
                             value={textReview} 
                             onChange={handleTextChange}
                             placeholder="Write your review here..."
-                            style={{resize: 'none',borderRadius: 10, textAlign: 'center'}}>
+                            style={{
+                                resize: 'none',
+                                borderRadius: 5, 
+                                textAlign: 'center', 
+                            }}>
                         </textarea>
                     </div>  
 
                     <div>
-                        {makeFieldUI()}
+                        {makeFieldUI()} 
                     </div>
                 
                     <div>
-                    <button type="submit" style={{
-                        borderRadius: 50, 
-                        border:'none', 
-                        backgroundColor: 'blue', 
-                        color:'white',
-                        textAlign: 'center',
-                        padding: '10px',
-                        margin: '4px',
-                        outline: 'none',
-                        cursor: 'pointer'
-                        }}> Submit</button>
+                        <button type="submit" style={{
+                            borderRadius: 15, 
+                            border:'none', 
+                            backgroundColor: 'blue', 
+                            color:'white',
+                            textAlign: 'center',
+                            padding: '10px',
+                            margin: '4px',
+                            outline: 'none',
+                            cursor: 'pointer',
+                            fontSize: '17px'
+                            }}> Submit
+                        </button>
                     </div>
+                  </div>
                 </form>
                 </div>
             ) : (
@@ -205,7 +212,11 @@ function StarRating(props){
        props.onChange(newStars)
     }
     return (
-        <div style={{width:'150px'}}>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexGrow: 1,
+        }}>
             <div className="star-rating">
                 {[1,2,3,4,5].map((n, i) => (
                 <Star
@@ -220,9 +231,9 @@ function StarRating(props){
 }
 
 const Star = ({ selected = false, onClick = f => f }) => (
-    <div>
-        {selected ? (<FaStar onClick={onClick} style={{color: 'orange', cursor: "pointer"}} />):
-            (<FaStar onClick={onClick} style={{color: 'grey', cursor:'pointer'}} />)}
+    <div style={{margin:'4px'}}>
+        {selected ? (<FaStar onClick={onClick} style={{color: 'orange', cursor: "pointer", fontSize:'25px'}} />):
+            (<FaStar onClick={onClick} style={{color: 'grey', cursor:'pointer', fontSize:'25px'}} />)}
     </div>
   );
 
