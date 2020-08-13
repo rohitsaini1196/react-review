@@ -1,7 +1,7 @@
 import React from 'react';
-import Rating from '@material-ui/lab/Rating';
+import PropTypes from "prop-types";
 
-export default function Reviewer(props) {
+function Reviewer(props) {
 
     const [starValue, setStarValue] = React.useState(4);
     //console.log(starValue);
@@ -35,19 +35,20 @@ export default function Reviewer(props) {
         var endT = new Date();
         const timeTaken = (endT.getTime() - startTime) / 1000;
         setIsSubmitted(true)
-        if(starValue !==null && starValue !== -1 ){
+        if(starValue !==null && starValue !== -1 && starValue !== 0 ){
+            var res = {
+                text : textReview,
+                stars: starValue,
+                analysis : textAnalysis(textReview, timeTaken),
+                categoryData : fieldData
+            }
+           // console.log(fieldData);
+            console.log(res);
+            return res;
         } else{
             alert("Please give it some stars");
         }
-        var res = {
-            text : textReview,
-            stars: starValue,
-            analysis : textAnalysis(textReview, timeTaken),
-            categoryData : fieldData
-        }
-        console.log(fieldData);
-        console.log(res);
-        return res;
+        
     }
 
     const handleStarChange =(newValue)=>{
@@ -146,11 +147,12 @@ export default function Reviewer(props) {
                     }}
                     />
                  </div>
-                 <textarea 
+                        <textarea 
                             rows="3" 
                             cols="20" 
                             value={fieldData[i].text}
-                            onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}                            placeholder="Write your review here..."
+                            onChange={(event)=>{handleFieldTextChange(event.target.value, i)}}                            
+                            placeholder="Write your review here..."
                             style={{resize: 'none',borderRadius: 10, textAlign: 'center'}}>
                         </textarea>
     
@@ -235,3 +237,10 @@ function StarRating(props){
 const Star = ({ selected = false, onClick = f => f }) => (
     <div className={selected ? "star selected" : "star"} onClick={onClick} />
   );
+
+
+Reviewer.propTypes = {
+    fieldData: PropTypes.array
+};
+
+export default Reviewer;
